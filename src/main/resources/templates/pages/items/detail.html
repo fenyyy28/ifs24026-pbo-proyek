@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main}">
+<head><title>Detail Barang</title></head>
+<body>
+<div layout:fragment="content">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-5 text-center">
+                    <img th:src="${item.imageUrl != null} ? @{'/uploads/' + ${item.imageUrl}} : 'https://via.placeholder.com/300?text=No+Image'" 
+                         class="img-fluid rounded mb-3" style="max-height: 400px; object-fit: cover;">
+                </div>
+                <div class="col-md-7">
+                    <h2 th:text="${item.name}" class="mb-2">Nama Barang</h2>
+                    <span class="badge bg-primary mb-3" th:text="${item.category}">Kategori</span>
+                    
+                    <h3 class="text-success fw-bold" th:text="'Rp ' + ${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')}">Price</h3>
+                    
+                    <div class="p-3 bg-light rounded mt-3">
+                        <div class="row mb-2">
+                            <div class="col-6"><strong>Stok:</strong> <span th:text="${item.quantity}">0</span> Unit</div>
+                            <div class="col-6"><strong>Kondisi:</strong> <span th:text="${item.itemCondition}">Baik</span></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <strong><i class="fas fa-map-marker-alt text-danger me-1"></i> Lokasi:</strong> 
+                                <span th:text="${item.storageLocation}">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="mt-4 text-muted" th:text="${item.description != null and item.description != '' ? item.description : 'Tidak ada deskripsi.'}"></p>
+                    
+                    <hr>
+                    <small class="text-muted">
+                        Terakhir diupdate: <span th:text="${#temporals.format(item.updatedAt, 'dd-MM-yyyy HH:mm')}">Date</span>
+                    </small>
+
+                    <div class="mt-4">
+                        <a th:href="@{/items}" class="btn btn-outline-secondary">Kembali</a>
+                        <a th:href="@{/items/edit/{id}(id=${item.id})}" class="btn btn-warning">Edit</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

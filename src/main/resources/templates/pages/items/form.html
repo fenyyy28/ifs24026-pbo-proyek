@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main}">
+<head><title>Form Barang</title></head>
+<body>
+<div layout:fragment="content">
+    <div class="card shadow-sm mx-auto" style="max-width: 700px;">
+        <div class="card-header bg-white">
+            <h4 th:text="${isEdit} ? 'Ubah Barang' : 'Tambah Barang Baru'">Form</h4>
+        </div>
+        <div class="card-body">
+            <form th:action="${isEdit} ? @{/items/update/{id}(id=${itemId})}: @{/items/save}" 
+                  th:object="${itemForm}" method="post" enctype="multipart/form-data">
+                
+                <!-- Nama Barang -->
+                <div class="mb-3">
+                    <label class="form-label">Nama Barang <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" th:field="*{name}" placeholder="Contoh: Laptop Gaming">
+                    <div class="text-danger small" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                </div>
+
+                <!-- Kategori & Jumlah -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Kategori <span class="text-danger">*</span></label>
+                        <select class="form-select" th:field="*{category}">
+                            <option value="">Pilih...</option>
+                            <option value="Elektronik">Elektronik</option>
+                            <option value="Furniture">Furniture</option>
+                            <option value="Pakaian">Pakaian</option>
+                            <option value="Kendaraan">Kendaraan</option>
+                            <option value="Dokumen">Dokumen</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                        <div class="text-danger small" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Jumlah <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" th:field="*{quantity}" min="1">
+                        <div class="text-danger small" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></div>
+                    </div>
+                </div>
+
+                <!-- Lokasi & Kondisi (BARU) -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Lokasi Penyimpanan <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" th:field="*{storageLocation}" placeholder="Contoh: Lemari Kaca, Gudang Atas">
+                        <div class="text-danger small" th:if="${#fields.hasErrors('storageLocation')}" th:errors="*{storageLocation}"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Kondisi Barang <span class="text-danger">*</span></label>
+                        <select class="form-select" th:field="*{itemCondition}">
+                            <option value="">Pilih Kondisi...</option>
+                            <option value="Baru">Baru</option>
+                            <option value="Baik">Bekas - Baik</option>
+                            <option value="Rusak Ringan">Rusak Ringan</option>
+                            <option value="Rusak Berat">Rusak Berat</option>
+                        </select>
+                        <div class="text-danger small" th:if="${#fields.hasErrors('itemCondition')}" th:errors="*{itemCondition}"></div>
+                    </div>
+                </div>
+
+                <!-- Harga -->
+                <div class="mb-3">
+                    <label class="form-label">Estimasi Harga (Rp) <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control" th:field="*{price}" min="0">
+                    <div class="text-danger small" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+                </div>
+
+                <!-- Deskripsi -->
+                <div class="mb-3">
+                    <label class="form-label">Deskripsi</label>
+                    <textarea class="form-control" th:field="*{description}" rows="3"></textarea>
+                </div>
+
+                <!-- Gambar -->
+                <div class="mb-3">
+                    <label class="form-label">Gambar Barang</label>
+                    <div th:if="${isEdit and currentImage != null}" class="mb-2">
+                        <img th:src="@{'/uploads/' + ${currentImage}}" width="100" class="img-thumbnail">
+                        <small class="d-block text-muted">Gambar saat ini</small>
+                    </div>
+                    <input type="file" class="form-control" th:field="*{image}" accept="image/*">
+                    <small class="text-muted">Kosongkan jika tidak ingin mengubah gambar.</small>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <a th:href="@{/items}" class="btn btn-light">Batal</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

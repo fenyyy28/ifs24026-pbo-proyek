@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+      layout:decorate="~{layout/main}">
+<head>
+    <title>Statistik Inventaris</title>
+    <!-- Pastikan Font Awesome termuat -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- STYLE KHUSUS HALAMAN CHART --- */
+        
+        /* 1. Container Kartu dengan Aksen Lilac */
+        .card-stat {
+            background: white;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border-top: 5px solid #c084fc; /* Garis atas tetap Lilac */
+            position: relative;
+        }
+
+        /* 2. Tombol Kembali (Outline Lilac) */
+        .btn-back-lilac {
+            background-color: white;
+            color: #9333ea; /* Ungu */
+            border: 1px solid #d8b4fe;
+            border-radius: 12px;
+            padding: 8px 20px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-back-lilac:hover {
+            background-color: #f3e8ff;
+            border-color: #9333ea;
+            color: #7e22ce;
+            transform: translateX(-3px);
+        }
+
+        /* 3. Tombol Tambah (Solid Lilac) */
+        .btn-lilac {
+            background-color: #c084fc;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 24px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .btn-lilac:hover {
+            background-color: #a855f7;
+            color: white;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Teks */
+        .page-title { color: #1e293b; font-weight: 700; }
+        .text-sub { color: #64748b; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    
+    <!-- Header Page -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="page-title mb-0">Statistik Nilai Aset</h3>
+            <p class="text-sub mb-0">Distribusi nilai barang berdasarkan kategori.</p>
+        </div>
+        <a th:href="@{/items}" class="btn-back-lilac">
+            <i class="fas fa-arrow-left"></i> Kembali
+        </a>
+    </div>
+
+    <!-- Chart Container -->
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card card-stat">
+                <div class="card-body p-4">
+                    
+                    <!-- KONDISI 1: DATA ADA -->
+                    <div th:unless="${#lists.isEmpty(chartLabels)}">
+                        <!-- Canvas -->
+                        <div style="position: relative; height: 350px; width: 100%;">
+                            <canvas id="inventoryChart"></canvas>
+                        </div>
+                        
+                        <!-- Keterangan Kecil -->
+                        <div class="text-center mt-4">
+                            <span class="badge rounded-pill bg-light text-dark fw-normal border">
+                                <i class="fas fa-info-circle me-1 text-muted"></i> 
+                                Arahkan kursor ke diagram untuk detail nilai (Rp)
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- KONDISI 2: DATA KOSONG -->
+                    <div th:if="${#lists.isEmpty(chartLabels)}" class="text-center py-5">
+                        <div class="mb-3">
+                            <i class="fas fa-chart-pie fa-4x opacity-25" style="color: #c084fc;"></i>
+                        </div>
+                        <h5 class="fw-bold" style="color: #4b5563;">Belum ada data statistik</h5>
+                        <p class="text-muted mb-4">Tambahkan barang untuk melihat grafik aset Anda.</p>
+                        <a th:href="@{/items/create}" class="btn-lilac">
+                            <i class="fas fa-plus me-1"></i> Tambah Barang
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Logic Javascript -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // Ambil data dari Thymeleaf
+            const labels = /*[[${chartLabels}]]*/ []; 
+            const dataValues = /*[[${chartValues}]]*/ [];
+
+            if (!labels || labels.length === 0) {
+                return;
+            }
+
+            const ctx = document.getElementById('inventoryChart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'doughnut', 
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: dataValues,
+                        
+                        /* --- BAGIAN WARNA (SANGAT KONTRAS) --- */
+                        backgroundColor: [
+                            '#9333EA', /* 1. UNGU (Tema Utama) */
+                            '#F59E0B', /* 2. ORANYE/AMBER (Kontras Hangat) */
+                            '#06B6D4', /* 3. CYAN/BIRU LAUT (Kontras Dingin) */
+                            '#EF4444', /* 4. MERAH (Jika ada data ke-4) */
+                            '#10B981', /* 5. HIJAU (Jika ada data ke-5) */
+                            '#6366F1'  /* 6. INDIGO */
+                        ],
+                        hoverBackgroundColor: [
+                            '#7E22CE', /* Ungu Gelap */
+                            '#D97706', /* Oranye Gelap */
+                            '#0891B2', /* Cyan Gelap */
+                            '#DC2626',
+                            '#059669',
+                            '#4F46E5'
+                        ],
+                        
+                        borderWidth: 2,
+                        borderColor: '#ffffff',
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 25,
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                font: {
+                                    family: "'Poppins', sans-serif",
+                                    size: 12
+                                },
+                                color: '#475569'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                            titleColor: '#1e293b',
+                            bodyColor: '#1e293b',
+                            borderColor: '#e2e8f0',
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: true,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    let value = context.parsed;
+                                    
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    
+                                    // Format Rupiah
+                                    label += new Intl.NumberFormat('id-ID', { 
+                                        style: 'currency', 
+                                        currency: 'IDR',
+                                        maximumFractionDigits: 0 
+                                    }).format(value);
+                                    
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    layout: {
+                        padding: 10
+                    },
+                    cutout: '60%', // Lubang tengah
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
+                    }
+                }
+            });
+        });
+        /*]]>*/
+    </script>
+</div>
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+      layout:decorate="~{layout/main}">
+<head>
+    <title>Dashboard - MyInventory</title>
+    <!-- Import Font Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* TEMA LILAC: Gradasi Ungu Cerah */
+            --primary-gradient: linear-gradient(135deg, #c084fc 0%, #a855f7 100%);
+            --card-shadow: 0 10px 20px rgba(0,0,0,0.03);
+            --hover-shadow: 0 15px 30px rgba(168, 85, 247, 0.15); /* Bayangan Ungu Halus */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fafc; /* Abu sangat muda (Clean) */
+        }
+
+        /* BANNER SELAMAT DATANG (LILAC THEME) */
+        .welcome-banner {
+            /* Gradasi Ungu Tua ke Ungu Muda */
+            background: linear-gradient(135deg, #7e22ce 0%, #c084fc 100%);
+            color: white;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(126, 34, 206, 0.25);
+        }
+        
+        .welcome-pattern {
+            position: absolute; right: 0; top: 0; height: 100%;
+            opacity: 0.1; transform: scale(1.5);
+        }
+
+        /* KARTU STATISTIK */
+        .stat-card {
+            background: #fff;
+            border-radius: 16px;
+            border: 1px solid #f1f5f9;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+            border-color: #e9d5ff; /* Border jadi ungu muda saat hover */
+        }
+
+        .icon-box {
+            width: 50px; height: 50px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; margin-bottom: 15px;
+        }
+
+        /* WARNA IKON (CUSTOM LILAC PALETTE) */
+        /* Aset: Ungu (Utama) */
+        .bg-soft-primary { background: #f3e8ff; color: #9333ea; }
+        /* Item: Teal (Kontras Segar) */
+        .bg-soft-success { background: #ccfbf1; color: #0f766e; }
+        /* Stok: Amber (Peringatan) */
+        .bg-soft-warning { background: #fef3c7; color: #d97706; }
+        /* Tag: Biru Langit (Netral) */
+        .bg-soft-info { background: #e0f2fe; color: #0284c7; }
+
+        /* TABEL BARANG */
+        .table-card {
+            background: white;
+            border-radius: 20px;
+            border: 1px solid #f1f5f9;
+            box-shadow: var(--card-shadow);
+            padding: 10px;
+        }
+
+        .table-custom thead th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: none;
+            padding: 15px;
+        }
+
+        .table-custom tbody td {
+            padding: 15px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.95rem;
+            color: #334155;
+        }
+
+        .table-custom tbody tr:last-child td { border-bottom: none; }
+
+        /* Badge Kategori Lilac */
+        .badge-soft {
+            background-color: #f3e8ff; /* Ungu sangat muda */
+            color: #7e22ce; /* Ungu Tua */
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        /* Tombol Tambah (Lilac Gradient) */
+        .btn-add {
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            border-radius: 10px;
+            padding: 10px 24px;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(168, 85, 247, 0.3);
+            transition: 0.3s;
+            text-decoration: none;
+        }
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(168, 85, 247, 0.4);
+            color: white;
+        }
+
+        .btn-view-all {
+            background: white;
+            color: #9333ea;
+            border: 1px solid #e9d5ff;
+            border-radius: 10px;
+            padding: 8px 20px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .btn-view-all:hover {
+            background: #f3e8ff;
+            color: #7e22ce;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <!-- 1. Welcome Banner (Lilac Theme) -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="welcome-banner p-4 p-lg-5 d-flex align-items-center justify-content-between">
+                <div class="position-relative z-2">
+                    <h2 class="fw-bold mb-2">Halo, <span th:text="${username} ?: 'Pengguna'">User</span>! 👋</h2>
+                    <p class="mb-0" style="color: rgba(255,255,255,0.9); max-width: 600px;">
+                        Senang melihat Anda kembali. Berikut adalah ringkasan performa inventaris dan aset Anda hari ini.
+                    </p>
+                </div>
+                <!-- Dekorasi Background -->
+                <i class="fas fa-cubes text-white opacity-25 fa-8x position-absolute" style="right: -20px; bottom: -30px; transform: rotate(-15deg);"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Stats Cards (Clean Style) -->
+    <div class="row g-4 mb-5">
+        
+        <!-- Total Aset (Ungu) -->
+        <div class="col-md-6 col-lg-3">
+            <div class="stat-card">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <!-- Icon Ungu -->
+                    <div class="icon-box bg-soft-primary">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <span class="badge bg-light text-secondary rounded-pill small">Aset</span>
+                </div>
+                <h3 class="fw-bold mb-1 text-dark" th:text="'Rp ' + ${#numbers.formatDecimal(totalAssetValue, 0, 'COMMA', 0, 'POINT')}">Rp 0</h3>
+                <p class="text-muted small mb-0">Total estimasi nilai</p>
+            </div>
+        </div>
+
+        <!-- Jenis Barang (Teal) -->
+        <div class="col-md-6 col-lg-3">
+            <div class="stat-card">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="icon-box bg-soft-success">
+                        <i class="fas fa-box-open"></i>
+                    </div>
+                    <span class="badge bg-light text-secondary rounded-pill small">Item</span>
+                </div>
+                <h3 class="fw-bold mb-1 text-dark" th:text="${totalItemTypes}">0</h3>
+                <p class="text-muted small mb-0">Jenis barang terdaftar</p>
+            </div>
+        </div>
+
+        <!-- Stok Fisik (Amber) -->
+        <div class="col-md-6 col-lg-3">
+            <div class="stat-card">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="icon-box bg-soft-warning">
+                        <i class="fas fa-cubes"></i>
+                    </div>
+                    <span class="badge bg-light text-secondary rounded-pill small">Stok</span>
+                </div>
+                <h3 class="fw-bold mb-1 text-dark" th:text="${totalQuantity}">0</h3>
+                <p class="text-muted small mb-0">Unit barang di gudang</p>
+            </div>
+        </div>
+
+        <!-- Kategori (Biru) -->
+        <div class="col-md-6 col-lg-3">
+            <div class="stat-card">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="icon-box bg-soft-info">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <span class="badge bg-light text-secondary rounded-pill small">Tag</span>
+                </div>
+                <h3 class="fw-bold mb-1 text-dark" th:text="${totalCategories}">0</h3>
+                <p class="text-muted small mb-0">Kategori aktif</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Recent Items Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-end mb-3">
+                <div>
+                    <h5 class="fw-bold text-dark mb-1">Barang Terbaru</h5>
+                    <p class="text-muted small mb-0">Daftar barang yang baru saja ditambahkan.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a th:href="@{/items}" class="btn-view-all">Lihat Semua</a>
+                    <a th:href="@{/items/create}" class="btn-add">
+                        <i class="fas fa-plus me-2"></i>Tambah Baru
+                    </a>
+                </div>
+            </div>
+
+            <div class="table-card p-0">
+                <div class="table-responsive" style="border-radius: 20px;">
+                    <table class="table table-custom mb-0">
+                        <thead>
+                            <tr>
+                                <th class="ps-4">Nama Barang</th>
+                                <th>Kategori</th>
+                                <th>Harga Satuan</th>
+                                <th>Stok</th>
+                                <th>Update Terakhir</th>
+                                <th class="text-end pe-4">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="item : ${recentItems}">
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <!-- Ikon Barang di Tabel (Ungu) -->
+                                        <div class="bg-light rounded p-2 me-3" style="color: #9333ea;">
+                                            <i class="fas fa-laptop" th:if="${#strings.containsIgnoreCase(item.category, 'elektronik')}"></i>
+                                            <i class="fas fa-tshirt" th:if="${#strings.containsIgnoreCase(item.category, 'pakaian')}"></i>
+                                            <i class="fas fa-box" th:unless="${#strings.containsIgnoreCase(item.category, 'elektronik') or #strings.containsIgnoreCase(item.category, 'pakaian')}"></i>
+                                        </div>
+                                        <span class="fw-bold" style="color: #1e293b;" th:text="${item.name}">Laptop</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge-soft" th:text="${item.category}">Elektronik</span>
+                                </td>
+                                <td class="fw-bold" style="color: #334155;" th:text="'Rp ' + ${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')}">Rp 10.000</td>
+                                <td>
+                                    <span th:class="${item.quantity < 5 ? 'text-danger fw-bold' : 'text-dark'}" 
+                                          th:text="${item.quantity} + ' Unit'">5 Unit</span>
+                                    <i th:if="${item.quantity < 5}" class="fas fa-exclamation-circle text-danger ms-1 small" title="Stok Menipis"></i>
+                                </td>
+                                <td class="text-muted small">
+                                    <i class="far fa-clock me-1"></i>
+                                    <span th:text="${#temporals.format(item.updatedAt, 'dd MMM yyyy, HH:mm')}">Baru saja</span>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <a th:href="@{/items/detail/{id}(id=${item.id})}" class="btn btn-sm btn-light text-muted rounded-circle" style="width: 32px; height: 32px;" title="Detail">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <!-- Empty State -->
+                            <tr th:if="${#lists.isEmpty(recentItems)}">
+                                <td colspan="6" class="text-center py-5">
+                                    <div class="text-muted">
+                                        <i class="fas fa-folder-open fa-3x mb-3 opacity-25" style="color: #c084fc;"></i>
+                                        <p class="mb-0">Belum ada data barang.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

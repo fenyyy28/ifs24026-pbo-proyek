@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title>Masuk - MyInventory</title>
+    
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Lottie Player -->
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            /* BACKGROUND: Putih keabu-abuan lembut (Netral) */
+            background: #f8fafc; 
+        }
+
+        .login-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            /* Hiasan background sangat tipis */
+            background-image: radial-gradient(#e9d5ff 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* --- CARD CONTAINER (Putih Bersih) --- */
+        .login-card {
+            background: #ffffff;
+            border-radius: 24px;
+            /* Shadow halus berwarna ungu pudar */
+            box-shadow: 0 20px 60px -15px rgba(192, 132, 252, 0.2); 
+            overflow: hidden;
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            position: relative;
+            z-index: 10;
+            border: 1px solid #f1f5f9;
+        }
+
+        /* --- KOLOM KIRI (Ilustrasi) --- */
+        .illustration-side {
+            /* Background Lilac Sangat Muda */
+            background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+            position: relative;
+        }
+
+        /* Elemen Dekorasi Abstrak */
+        .blob {
+            position: absolute;
+            background: #d8b4fe;
+            border-radius: 50%;
+            opacity: 0.3;
+            filter: blur(40px);
+            z-index: 0;
+        }
+
+        /* --- INPUT FIELD STYLING --- */
+        .form-floating > .form-control {
+            background: #f8fafc; /* Abu sangat muda */
+            border: 2px solid #e2e8f0; /* Border abu */
+            border-radius: 12px;
+            height: 55px;
+            color: #334155;
+            font-weight: 500;
+            padding-left: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-floating > .form-control:focus {
+            background: #ffffff;
+            /* Border berubah jadi Lilac saat diklik */
+            border-color: #c084fc; 
+            /* Glow Lilac halus */
+            box-shadow: 0 0 0 4px rgba(192, 132, 252, 0.15); 
+            transform: translateY(-2px);
+        }
+
+        .form-floating > label {
+            padding-left: 15px;
+            color: #94a3b8;
+        }
+
+        /* --- TOMBOL (Aksen Utama) --- */
+        .btn-lilac {
+            /* Warna Lilac yang enak dilihat */
+            background-color: #c084fc; 
+            background-image: linear-gradient(135deg, #c084fc 0%, #a855f7 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.25); /* Shadow ungu */
+            transition: all 0.3s ease;
+            width: 100%;
+            color: white;
+            margin-top: 10px;
+        }
+
+        .btn-lilac:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4);
+            color: white;
+        }
+
+        /* --- TEXT & LINKS --- */
+        .heading-text {
+            color: #1e293b; /* Hampir hitam */
+            font-weight: 700;
+        }
+
+        .link-custom {
+            color: #a855f7; /* Ungu sedang */
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .link-custom:hover {
+            color: #7e22ce; /* Ungu tua */
+            text-decoration: underline;
+        }
+
+        /* Checkbox Custom */
+        .form-check-input:checked {
+            background-color: #c084fc;
+            border-color: #c084fc;
+        }
+
+        /* Responsive */
+        @media (max-width: 991px) {
+            .illustration-side { display: none; }
+            .login-card { max-width: 500px; }
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    
+    <div class="login-wrapper">
+        
+        <div class="container d-flex justify-content-center">
+            
+            <div class="login-card row g-0">
+                
+                <!-- KOLOM KIRI: Ilustrasi & Branding (Warna background lembut) -->
+                <div class="col-lg-6 illustration-side">
+                    <!-- Blob Dekorasi -->
+                    <div class="blob" style="width: 200px; height: 200px; top: -50px; left: -50px;"></div>
+                    <div class="blob" style="width: 150px; height: 150px; bottom: 50px; right: -30px; background: #c084fc;"></div>
+
+                    <div style="position: relative; z-index: 2; text-align: center;">
+                        <!-- Lottie Animation -->
+                        <lottie-player 
+                            src="https://lottie.host/80516624-9f4a-4a25-a74c-473d09a27c7f/lD5X7w5g0W.json"
+                            background="transparent" 
+                            speed="1" 
+                            style="width: 100%; max-width: 400px; height: auto;" 
+                            loop 
+                            autoplay>
+                        </lottie-player>
+
+                        <div class="mt-4">
+                            <h2 class="fw-bold" style="color: #6b21a8;">MyInventory</h2>
+                            <p style="color: #64748b; font-size: 0.95rem; max-width: 350px; margin: 0 auto;">
+                                Kelola aset Anda dengan antarmuka yang bersih, modern, dan nyaman di mata.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KOLOM KANAN: Form Login (Putih Bersih) -->
+                <div class="col-lg-6 p-5 bg-white d-flex flex-column justify-content-center">
+                    
+                    <div class="text-center mb-5">
+                        <div class="d-inline-flex align-items-center justify-content-center p-3 rounded-circle mb-3" 
+                             style="background: #f3e8ff; color: #9333ea; width: 60px; height: 60px;">
+                            <i class="fas fa-box-open fa-lg"></i>
+                        </div>
+                        <h3 class="heading-text mb-1">Selamat Datang</h3>
+                        <p class="text-muted small">Silakan masuk ke akun Anda</p>
+                    </div>
+
+                    <form th:action="@{/auth/login/post}" method="post" th:object="${loginForm}">
+                        
+                        <!-- Alert Messages (IKON DIHAPUS DISINI) -->
+                        <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger small py-2 rounded-3">
+                            <div th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+                        </div>
+                        
+                        <div th:if="${success}" class="alert alert-success small py-2 rounded-3">
+                            <span th:text="${success}"></span>
+                        </div>
+
+                        <!-- Email Input -->
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="name@example.com">
+                            <label for="email">Alamat Email</label>
+                            <div class="text-danger small mt-1 ps-1" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                        </div>
+
+                        <!-- Password Input -->
+                        <div class="form-floating mb-4">
+                            <input type="password" class="form-control" id="password" th:field="*{password}" placeholder="Password">
+                            <label for="password">Kata Sandi</label>
+                            <div class="text-danger small mt-1 ps-1" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                        </div>
+
+                        <!-- Checkbox & Link -->
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="rememberMe" th:field="*{rememberMe}">
+                                <label class="form-check-label text-muted small" for="rememberMe">
+                                    Ingat saya
+                                </label>
+                            </div>
+                            <a href="#" class="link-custom small">Lupa Password?</a>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-lilac">
+                            MASUK <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+                    </form>
+
+                    <div class="text-center mt-5">
+                        <p class="text-muted small mb-0">Belum memiliki akun?</p>
+                        <a th:href="@{/auth/register}" class="link-custom fw-bold">Daftar Akun Baru</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Footer Kecil -->
+        <div class="position-absolute bottom-0 w-100 text-center pb-3">
+            <span class="text-muted small" style="font-size: 0.75rem;">&copy; 2025 MyInventory System.</span>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>
